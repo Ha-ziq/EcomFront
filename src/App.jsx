@@ -11,6 +11,7 @@ import Cart from './Pages/Cart';
 import { useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import Checkout from './Pages/Checkout';
+import UserOrders from './Pages/UserOrders';
 
 function App() {
   const [cartCount, setCartCount] = useState(0);
@@ -72,6 +73,16 @@ function App() {
         <div>
           <Navbar cartCount={cartCount} />
           <Checkout />
+          <Footer />
+        </div>
+      ),
+    },
+    {
+      path: '/MyOrders',
+      element: (
+        <div>
+          <Navbar cartCount={cartCount} />
+          <UserOrders />
           <Footer />
         </div>
       ),

@@ -52,10 +52,13 @@ const Cart = () => {
               </div>
 
               {/* Checkout button */}
+
               <div className="flex justify-end">
+          <Link to="/Checkout">
                 <button className="bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition">
                   Proceed to Checkout
                 </button>
+                </Link>
               </div>
             </div>
           );

@@ -59,7 +59,7 @@ const Navbar = () => {
                   Profile
                 </Link>
                 <Link
-                  to="/orders"
+                  to="/MyOrders"
                   className="block px-4 py-2 hover:bg-gray-100 text-sm"
                 >
                   Orders
