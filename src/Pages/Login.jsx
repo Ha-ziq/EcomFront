@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // import { useAuth } from '.../context/AuthContext';
 import { useAuth } from '@/context/AuthContext';
+import { jwtDecode } from 'jwt-decode';
 import { useCart } from '@/context/CartContext';
 
 const Login = () => {
@@ -23,8 +24,16 @@ const Login = () => {
       });
 
       const data = await response.json();
-      if (data.user.id) {
-        setUser(data.user.name);
+      if (data.user?.id && data.token) {
+        // decode token and set the decoded payload in context (so role is available)
+        try {
+          const decoded = jwtDecode(data.token);
+          setUser(decoded);
+        } catch (err) {
+          // fallback to name if decode fails
+          console.error('Token decode failed', err);
+          setUser(data.user.name);
+        }
         localStorage.setItem('token', data.token);
         navigate('/home');
         setCartCount(data.user.cart.length);

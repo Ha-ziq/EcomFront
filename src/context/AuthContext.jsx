@@ -6,7 +6,7 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const token = localStorage.getItem('token');
 
-  // Decode token immediately when provider is created
+  // Decode token immediately when provider is created and expose decoded payload
   let initialUser = null;
   if (token) {
     try {
@@ -14,12 +14,13 @@ export function AuthProvider({ children }) {
       const isExpired = decoded.exp * 1000 < Date.now();
 
       if (!isExpired) {
-        initialUser = decoded.name; // or decoded object if you want more info
+        // store the entire decoded payload so components can access name, role, etc.
+        initialUser = decoded;
       } else {
         localStorage.removeItem('token');
       }
     } catch (err) {
-      console.error("Invalid token:", err);
+      console.error('Invalid token:', err);
       localStorage.removeItem('token');
     }
   }

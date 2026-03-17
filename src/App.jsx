@@ -10,8 +10,10 @@ import ProductDetails from './components/ProductDetail';
 import Cart from './Pages/Cart';
 import { useState } from 'react';
 import { Toaster } from 'react-hot-toast';
-import Checkout from './Pages/Checkout';
+import OrderDetails from './Pages/OrderDetails';
 import UserOrders from './Pages/UserOrders';
+import AddProduct from './Pages/AddProduct';
+import UpdateProduct from './Pages/UpdateProduct';
 
 function App() {
   const [cartCount, setCartCount] = useState(0);
@@ -21,6 +23,16 @@ function App() {
       element: (
         <div>
           <Login setCartCount={setCartCount} />
+        </div>
+      ),
+    },
+    {
+      path: '/add-product',
+      element: (
+        <div>
+          <Navbar cartCount={cartCount} />
+          <AddProduct />
+          <Footer />
         </div>
       ),
     },
@@ -58,6 +70,16 @@ function App() {
       ),
     },
     {
+      path: '/products/:id/edit',
+      element: (
+        <div>
+          <Navbar cartCount={cartCount} />
+          <UpdateProduct />
+          <Footer />
+        </div>
+      ),
+    },
+    {
       path: '/cart',
       element: (
         <div>
@@ -68,11 +90,11 @@ function App() {
       ),
     },
     {
-      path: '/Checkout',
+      path: '/order-details',
       element: (
         <div>
           <Navbar cartCount={cartCount} />
-          <Checkout />
+          <OrderDetails />
           <Footer />
         </div>
       ),

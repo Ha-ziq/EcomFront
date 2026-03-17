@@ -1,30 +1,15 @@
 import { useAuth } from '@/context/AuthContext';
-import toast from 'react-hot-toast';
 import { useCart } from '@/context/CartContext';
 import CheckoutItem from '@/components/CheckoutItem';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Checkout = () => {
   const { cart } = useCart();
-  const { user } = useAuth();
-  const token = localStorage.getItem('token');
+  useAuth();
+  const navigate = useNavigate();
 
-  const handlePlaceOrder = async () => {
-    try {
-      const response = await fetch('http://localhost:3000/api/order', {
-        method: 'post',
-        headers: {
-          'content-type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        toast.success('Order Placed');
-      }
-    } catch (err) {
-      console.log({ error: err.message });
-    }
+  const handleProceedToDetails = () => {
+    navigate('/order-details');
   };
 
   {
@@ -56,16 +41,19 @@ const Checkout = () => {
             </p>
           </div>
 
-          {/* Place Order */}
-          <div className="mt-8 flex justify-end">
-            <Link to="/MyOrders">
-              <button
-                className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
-                onClick={() => handlePlaceOrder()}
-              >
-                Place Order
+          {/* Proceed to Order Details */}
+          <div className="mt-8 flex justify-end gap-4">
+            <Link to="/products">
+              <button className="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 transition">
+                Continue Shopping
               </button>
             </Link>
+            <button
+              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
+              onClick={handleProceedToDetails}
+            >
+              Proceed to Details
+            </button>
           </div>
         </div>
       );

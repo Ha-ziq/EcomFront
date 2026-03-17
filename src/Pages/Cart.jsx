@@ -13,7 +13,7 @@ const Cart = () => {
 
   const renderCart = () => {
     if (user) {
-      console.log(loading)
+      console.log(loading);
       if (loading) {
         return (
           <div className="flex justify-center items-center h-64">
@@ -51,13 +51,12 @@ const Cart = () => {
                 </p>
               </div>
 
-              {/* Checkout button */}
-
+              {/* Proceed to Order Details button */}
               <div className="flex justify-end">
-          <Link to="/Checkout">
-                <button className="bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition">
-                  Proceed to Checkout
-                </button>
+                <Link to="/order-details">
+                  <button className="bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition">
+                    Proceed to Checkout
+                  </button>
                 </Link>
               </div>
             </div>

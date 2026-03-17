@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
+import toast from 'react-hot-toast';
 
 const initialState = {
   name: '',
@@ -11,11 +12,14 @@ const initialState = {
   imageUrl: '',
 };
 
-export default function AddProduct() {
+export default function UpdateProduct() {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [form, setForm] = useState(initialState);
   const [loading, setLoading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [message, setMessage] = useState(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -23,18 +27,41 @@ export default function AddProduct() {
       navigate('/');
       return;
     }
+
     try {
       const decoded = jwtDecode(token);
       if (!decoded || decoded.role !== 'admin') {
-        // not an admin -> redirect to home
         navigate('/home');
+        return;
       }
     } catch (err) {
-      console.error('Invalid token', err);
+      console.error('Invalid token:', err);
       localStorage.removeItem('token');
       navigate('/');
+      return;
     }
-  }, [navigate]);
+
+    const fetchProduct = async () => {
+      try {
+        const res = await fetch(`http://localhost:3000/api/products/${id}`);
+        if (!res.ok) throw new Error('Failed to load product');
+        const data = await res.json();
+        setForm({
+          name: data.name || '',
+          description: data.description || '',
+          category: data.category || '',
+          price: data.price ?? '',
+          stock: data.stock ?? '',
+          imageUrl: data.imageUrl || '',
+        });
+      } catch (err) {
+        console.error(err);
+        setMessage({ type: 'error', text: 'Could not load product' });
+      }
+    };
+
+    fetchProduct();
+  }, [id, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -64,14 +91,10 @@ export default function AddProduct() {
     e.preventDefault();
     setMessage(null);
     const err = validate();
-    if (err) {
-      setMessage({ type: 'error', text: err });
-      return;
-    }
+    if (err) return setMessage({ type: 'error', text: err });
 
     const token = localStorage.getItem('token');
     if (!token) {
-      setMessage({ type: 'error', text: 'You must be logged in as admin' });
       navigate('/');
       return;
     }
@@ -87,8 +110,8 @@ export default function AddProduct() {
         imageUrl: form.imageUrl || undefined,
       };
 
-      const res = await fetch('http://localhost:3000/api/products', {
-        method: 'POST',
+      const res = await fetch(`http://localhost:3000/api/products/${id}`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
@@ -98,14 +121,10 @@ export default function AddProduct() {
 
       const data = await res.json();
       if (res.ok) {
-        setMessage({ type: 'success', text: 'Product created successfully' });
-        setForm(initialState);
-        setTimeout(() => navigate('/products'), 1000);
+        setMessage({ type: 'success', text: 'Product updated successfully' });
+        setTimeout(() => navigate(`/products/${id}`), 1000);
       } else {
-        setMessage({
-          type: 'error',
-          text: data?.message || data?.error || 'Failed to create product',
-        });
+        setMessage({ type: 'error', text: data?.message || 'Update failed' });
       }
     } catch (err) {
       setMessage({ type: 'error', text: err.message || 'Network error' });
@@ -114,9 +133,51 @@ export default function AddProduct() {
     }
   };
 
+  const handleDelete = async () => {
+    setMessage(null);
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/');
+      return;
+    }
+
+    setDeleting(true);
+    try {
+      const res = await fetch(`http://localhost:3000/api/products/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        toast.success('Product deleted successfully', {
+          position: 'top-center',
+        });
+        setTimeout(() => navigate('/products'), 900);
+      } else {
+        const errorMessage = data?.message || data?.error || 'Delete failed';
+        toast.error(errorMessage, { position: 'top-center' });
+        setMessage({
+          type: 'error',
+          text: errorMessage,
+        });
+      }
+    } catch (err) {
+      toast.error(err.message || 'Network error', { position: 'top-center' });
+      setMessage({ type: 'error', text: err.message || 'Network error' });
+    } finally {
+      setShowDeleteConfirm(false);
+      setDeleting(false);
+    }
+  };
+
   return (
     <div className="max-w-6xl mx-auto p-6">
-      <h2 className="text-3xl font-extrabold mb-6">Add New Product</h2>
+      <h2 className="text-3xl font-extrabold mb-6">Edit Product</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
         {/* Left: Preview */}
@@ -252,16 +313,51 @@ export default function AddProduct() {
                 disabled={loading}
                 className="flex-1 bg-blue-600 text-white px-6 py-3 rounded-xl shadow-md hover:bg-blue-700 transform hover:-translate-y-0.5 transition"
               >
-                {loading ? 'Adding...' : 'Add Product'}
+                {loading ? 'Updating...' : 'Update Product'}
               </button>
               <button
                 type="button"
-                onClick={() => setForm(initialState)}
+                onClick={() => navigate(-1)}
                 className="px-5 py-3 border rounded-xl hover:bg-gray-50 transition"
               >
-                Reset
+                Cancel
               </button>
             </div>
+
+            {showDeleteConfirm && (
+              <div className="mt-3 rounded-xl border border-red-200 bg-red-50 p-4">
+                <p className="text-sm text-red-800 mb-3">
+                  Confirm product deletion. This action cannot be undone.
+                </p>
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    disabled={deleting}
+                    onClick={handleDelete}
+                    className="flex-1 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition disabled:opacity-70"
+                  >
+                    {deleting ? 'Deleting...' : 'Confirm Delete'}
+                  </button>
+                  <button
+                    type="button"
+                    disabled={deleting}
+                    onClick={() => setShowDeleteConfirm(false)}
+                    className="flex-1 border border-red-300 text-red-700 px-4 py-2 rounded-lg hover:bg-red-100 transition"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <button
+              type="button"
+              disabled={deleting}
+              onClick={() => setShowDeleteConfirm(true)}
+              className="w-full mt-3 bg-red-600 text-white px-6 py-3 rounded-xl shadow-md hover:bg-red-700 transform hover:-translate-y-0.5 transition disabled:opacity-70"
+            >
+              Delete Product
+            </button>
           </form>
         </div>
       </div>
