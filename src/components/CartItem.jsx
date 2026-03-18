@@ -20,7 +20,7 @@ const CartItem = ({ product, productid }) => {
       });
 
       if (response.ok) {
-        toast.success('product Removed');
+        toast.success('Product Removed');
         fetchCart();
       }
     } catch (err) {
@@ -28,9 +28,8 @@ const CartItem = ({ product, productid }) => {
     }
   };
 
-  const handleIncrement = async (id,action) => {
+  const handleIncrement = async (id, action) => {
     try {
-      console.log("increment")
       const response = await fetch('http://localhost:3000/api/cart', {
         method: 'put',
         headers: {
@@ -53,46 +52,54 @@ const CartItem = ({ product, productid }) => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row items-center md:justify-between gap-4 p-4 border rounded-xl shadow-sm hover:shadow-lg hover:border-gray-300 transition-all duration-200">
-      {/* Image */}
-      <img
-        src={product.imageUrl}
-        alt={product.name}
-        className="w-24 h-24 object-contain rounded md:w-20 md:h-20"
-      />
+    <div className="flex flex-col md:flex-row items-center md:justify-between gap-6 p-4 sm:p-5 bg-[#141414] border border-[#262626] rounded-xl card-hover transition-all duration-200">
+      {/* Image container - white to show off JPEG products cleanly */}
+      <div className="w-24 h-24 bg-white rounded-lg flex items-center justify-center p-2 flex-shrink-0">
+        <img
+          src={product.imageUrl}
+          alt={product.name}
+          className="w-full h-full object-contain mix-blend-multiply"
+        />
+      </div>
 
       {/* Info */}
       <div className="flex-1 text-center md:text-left">
-        <h2 className="font-semibold text-lg">{product.name}</h2>
-        <p className="text-gray-600">${product.price}</p>
+        <h2 className="font-semibold text-lg text-[#FAFAFA] mb-1">{product.name}</h2>
+        <p className="text-[#A3A3A3] font-medium">${product.price}</p>
       </div>
 
       {/* Quantity + Remove */}
-      <div className="flex flex-col sm:flex-row items-center gap-3">
-        {/* Quantity */}
-        <div className="flex items-center gap-3">
-          <button className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-200 hover:bg-gray-300 text-gray-700 transition"
-          onClick={() => handleIncrement(productid,"decrement")}>
-            <Minus size={18} />
+      <div className="flex flex-col sm:flex-row items-center gap-4 md:gap-6">
+        {/* Quantity Controls */}
+        <div className="flex items-center bg-[#0A0A0A] border border-[#262626] rounded-lg p-1">
+          <button
+            className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-[#1A1A1A] text-[#A3A3A3] hover:text-[#FAFAFA] transition-colors"
+            onClick={() => handleIncrement(productid, "decrement")}
+            aria-label="Decrease quantity"
+          >
+            <Minus size={16} />
           </button>
 
-          <span className="px-2 font-medium text-lg">{product.quantity}</span>
+          <span className="w-10 text-center font-medium text-[#FAFAFA] text-sm">
+            {product.quantity}
+          </span>
 
           <button
-            className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-200 hover:bg-gray-300 text-gray-700 transition"
-            onClick={() => handleIncrement(productid,"increment")}
+            className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-[#1A1A1A] text-[#A3A3A3] hover:text-[#FAFAFA] transition-colors"
+            onClick={() => handleIncrement(productid, "increment")}
+            aria-label="Increase quantity"
           >
-            <Plus size={18} />
+            <Plus size={16} />
           </button>
         </div>
 
         {/* Remove */}
         <button
-          className="mt-2 sm:mt-0 flex items-center gap-1 px-3 py-2 rounded-md bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-800 font-medium transition"
+          className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm text-[#EF4444] hover:bg-red-500/10 transition-colors font-medium border border-transparent hover:border-red-500/20"
           onClick={() => handleRemove(productid)}
         >
-          <Trash2 size={18} />
-          Remove
+          <Trash2 size={16} />
+          <span className="hidden sm:inline">Remove</span>
         </button>
       </div>
     </div>

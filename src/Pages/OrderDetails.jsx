@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useCart } from '@/context/CartContext';
-import CheckoutItem from '@/components/CheckoutItem';
 
 const OrderDetails = () => {
   const { cart } = useCart();
@@ -58,6 +57,7 @@ const OrderDetails = () => {
     if (!validate()) {
       toast.error('Please fill in all required fields correctly', {
         position: 'top-center',
+        style: { background: '#141414', color: '#FAFAFA', border: '1px solid #262626' }
       });
       return;
     }
@@ -80,18 +80,24 @@ const OrderDetails = () => {
       const data = await response.json();
 
       if (response.ok) {
-        toast.success('Order placed successfully!', { position: 'top-center' });
-        // Navigate to orders page after successful order
+        toast.success('Order placed successfully!', { 
+          position: 'top-center',
+          style: { background: '#141414', color: '#FAFAFA', border: '1px solid #262626' }
+        });
         setTimeout(() => navigate('/MyOrders'), 1000);
       } else {
         console.error('Order placement error:', data);
         toast.error(data?.message || data?.error || 'Failed to place order', {
           position: 'top-center',
+          style: { background: '#141414', color: '#FAFAFA', border: '1px solid #262626' }
         });
       }
     } catch (err) {
       console.error('Network error:', err);
-      toast.error(err.message || 'Network error', { position: 'top-center' });
+      toast.error(err.message || 'Network error', { 
+        position: 'top-center',
+        style: { background: '#141414', color: '#FAFAFA', border: '1px solid #262626' }
+      });
     } finally {
       setLoading(false);
     }
@@ -99,261 +105,123 @@ const OrderDetails = () => {
 
   if (!cart?.items || cart.items.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-[60vh] text-center space-y-4 bg-gray-50 rounded-lg shadow-md p-8">
-        <p className="text-lg font-medium text-gray-700">
-          Your cart is currently{' '}
-          <span className="font-bold text-gray-900">empty</span>.
-        </p>
+      <div className="min-h-screen bg-[#0A0A0A] pt-32 px-4 flex justify-center">
+        <div className="flex flex-col items-center justify-center h-[50vh] text-center space-y-4 bg-[#141414] border border-[#262626] rounded-2xl shadow-lg p-10 max-w-2xl w-full">
+          <p className="text-lg font-medium text-[#A3A3A3]">
+            Your cart is currently{' '}
+            <span className="font-bold text-[#FAFAFA]">empty</span>.
+          </p>
+          <button onClick={() => navigate('/products')} className="mt-4 bg-[#3B82F6] text-white px-8 py-3 rounded-lg hover:bg-blue-600 transition">
+            Browse Products
+          </button>
+        </div>
       </div>
     );
   }
 
+  const InputField = ({ label, name, type = 'text', placeholder }) => (
+    <div>
+      <label className="block mb-2 text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider">
+        {label} *
+      </label>
+      <input
+        type={type}
+        name={name}
+        value={formData[name]}
+        onChange={handleChange}
+        className={`w-full px-4 py-3 bg-[#0A0A0A] border rounded-lg text-sm text-[#FAFAFA] placeholder:text-[#737373] focus:outline-none transition-colors ${
+          errors[name]
+            ? 'border-red-500 focus:border-red-400'
+            : 'border-[#262626] focus:border-[#3B82F6]'
+        }`}
+        placeholder={placeholder}
+      />
+      {errors[name] && (
+        <p className="text-red-500 text-xs mt-1.5">{errors[name]}</p>
+      )}
+    </div>
+  );
+
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      <h1 className="text-3xl font-extrabold mb-8">Order Details</h1>
+    <div className="min-h-screen bg-[#0A0A0A] pt-24 pb-16 px-4 sm:px-6">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-3xl font-semibold text-[#FAFAFA] mb-8">Checkout</h1>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left: Order Summary */}
-        <div className="lg:col-span-2">
-          <div className="bg-white rounded-2xl shadow-xl p-6">
-            <h2 className="text-2xl font-bold mb-6">Shipping Information</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Left: Order Summary */}
+          <div className="lg:col-span-8">
+            <div className="bg-[#141414] rounded-2xl border border-[#262626] p-6 sm:p-8">
+              <h2 className="text-xl font-semibold text-[#FAFAFA] mb-6">Shipping Information</h2>
 
-            <form onSubmit={handlePlaceOrder} className="space-y-5">
-              {/* Full Name */}
-              <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">
-                  Full Name *
-                </label>
-                <input
-                  type="text"
-                  name="fullName"
-                  value={formData.fullName}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 ${
-                    errors.fullName
-                      ? 'border-red-500 focus:ring-red-200'
-                      : 'border-gray-300 focus:ring-blue-200'
-                  }`}
-                  placeholder="John Doe"
-                />
-                {errors.fullName && (
-                  <p className="text-red-600 text-sm mt-1">{errors.fullName}</p>
-                )}
-              </div>
+              <form onSubmit={handlePlaceOrder} className="space-y-5">
+                <InputField label="Full Name" name="fullName" placeholder="John Doe" />
+                <InputField label="Email" name="email" type="email" placeholder="john@example.com" />
+                <InputField label="Phone Number" name="phone" type="tel" placeholder="+1 (555) 000-0000" />
+                <InputField label="Street Address" name="streetAddress" placeholder="123 Main Street" />
 
-              {/* Email */}
-              <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">
-                  Email *
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 ${
-                    errors.email
-                      ? 'border-red-500 focus:ring-red-200'
-                      : 'border-gray-300 focus:ring-blue-200'
-                  }`}
-                  placeholder="john@example.com"
-                />
-                {errors.email && (
-                  <p className="text-red-600 text-sm mt-1">{errors.email}</p>
-                )}
-              </div>
-
-              {/* Phone */}
-              <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">
-                  Phone Number *
-                </label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 ${
-                    errors.phone
-                      ? 'border-red-500 focus:ring-red-200'
-                      : 'border-gray-300 focus:ring-blue-200'
-                  }`}
-                  placeholder="+1 (555) 000-0000"
-                />
-                {errors.phone && (
-                  <p className="text-red-600 text-sm mt-1">{errors.phone}</p>
-                )}
-              </div>
-
-              {/* Street Address */}
-              <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">
-                  Street Address *
-                </label>
-                <input
-                  type="text"
-                  name="streetAddress"
-                  value={formData.streetAddress}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 ${
-                    errors.streetAddress
-                      ? 'border-red-500 focus:ring-red-200'
-                      : 'border-gray-300 focus:ring-blue-200'
-                  }`}
-                  placeholder="123 Main Street"
-                />
-                {errors.streetAddress && (
-                  <p className="text-red-600 text-sm mt-1">
-                    {errors.streetAddress}
-                  </p>
-                )}
-              </div>
-
-              {/* City, State, Postal Code */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                  <label className="block mb-2 text-sm font-medium text-gray-700">
-                    City *
-                  </label>
-                  <input
-                    type="text"
-                    name="city"
-                    value={formData.city}
-                    onChange={handleChange}
-                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 ${
-                      errors.city
-                        ? 'border-red-500 focus:ring-red-200'
-                        : 'border-gray-300 focus:ring-blue-200'
-                    }`}
-                    placeholder="New York"
-                  />
-                  {errors.city && (
-                    <p className="text-red-600 text-sm mt-1">{errors.city}</p>
-                  )}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <InputField label="City" name="city" placeholder="New York" />
+                  <InputField label="State/Province" name="state" placeholder="NY" />
+                  <InputField label="Postal Code" name="postalCode" placeholder="10001" />
                 </div>
 
-                <div>
-                  <label className="block mb-2 text-sm font-medium text-gray-700">
-                    State/Province *
-                  </label>
-                  <input
-                    type="text"
-                    name="state"
-                    value={formData.state}
-                    onChange={handleChange}
-                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 ${
-                      errors.state
-                        ? 'border-red-500 focus:ring-red-200'
-                        : 'border-gray-300 focus:ring-blue-200'
-                    }`}
-                    placeholder="NY"
-                  />
-                  {errors.state && (
-                    <p className="text-red-600 text-sm mt-1">{errors.state}</p>
-                  )}
+                <InputField label="Country" name="country" placeholder="United States" />
+
+                <div className="flex flex-col sm:flex-row gap-4 mt-8 pt-6 border-t border-[#262626]">
+                  <button
+                    type="button"
+                    onClick={() => navigate('/cart')}
+                    className="flex-1 border border-[#262626] text-[#A3A3A3] px-6 py-3.5 rounded-xl hover:bg-[#1A1A1A] hover:text-[#FAFAFA] transition-colors font-medium text-sm"
+                  >
+                    Back to Cart
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="flex-1 bg-[#3B82F6] text-white px-6 py-3.5 rounded-xl hover:bg-blue-600 transition-colors font-medium text-sm disabled:opacity-50"
+                  >
+                    {loading ? 'Processing...' : 'Place Order'}
+                  </button>
                 </div>
-
-                <div>
-                  <label className="block mb-2 text-sm font-medium text-gray-700">
-                    Postal Code *
-                  </label>
-                  <input
-                    type="text"
-                    name="postalCode"
-                    value={formData.postalCode}
-                    onChange={handleChange}
-                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 ${
-                      errors.postalCode
-                        ? 'border-red-500 focus:ring-red-200'
-                        : 'border-gray-300 focus:ring-blue-200'
-                    }`}
-                    placeholder="10001"
-                  />
-                  {errors.postalCode && (
-                    <p className="text-red-600 text-sm mt-1">
-                      {errors.postalCode}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              {/* Country */}
-              <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">
-                  Country *
-                </label>
-                <input
-                  type="text"
-                  name="country"
-                  value={formData.country}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 ${
-                    errors.country
-                      ? 'border-red-500 focus:ring-red-200'
-                      : 'border-gray-300 focus:ring-blue-200'
-                  }`}
-                  placeholder="United States"
-                />
-                {errors.country && (
-                  <p className="text-red-600 text-sm mt-1">{errors.country}</p>
-                )}
-              </div>
-
-              {/* Buttons */}
-              <div className="flex gap-4 mt-8 pt-6 border-t">
-                <button
-                  type="button"
-                  onClick={() => navigate('/cart')}
-                  className="flex-1 border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 transition font-medium"
-                >
-                  Back to Cart
-                </button>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition font-medium disabled:opacity-70"
-                >
-                  {loading ? 'Placing Order...' : 'Place Order'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-
-        {/* Right: Order Summary Sidebar */}
-        <div className="lg:col-span-1">
-          <div className="bg-white rounded-2xl shadow-xl p-6 sticky top-6">
-            <h2 className="text-xl font-bold mb-6">Order Summary</h2>
-
-            <div className="space-y-3 border-b pb-6">
-              {cart.items.map((item) => (
-                <div key={item.id} className="flex justify-between text-sm">
-                  <span className="text-gray-600">
-                    {item.name} x {item.quantity}
-                  </span>
-                  <span className="font-medium">
-                    ${(item.price * item.quantity).toFixed(2)}
-                  </span>
-                </div>
-              ))}
+              </form>
             </div>
+          </div>
 
-            <div className="mt-6 space-y-3">
-              <div className="flex justify-between text-gray-600">
-                <span>Subtotal</span>
-                <span>${cart.totalPrice?.toFixed(2) || '0.00'}</span>
+          {/* Right: Order Summary Sidebar */}
+          <div className="lg:col-span-4">
+            <div className="bg-[#141414] rounded-2xl border border-[#262626] p-6 lg:sticky lg:top-24">
+              <h2 className="text-lg font-semibold text-[#FAFAFA] mb-6">Order Summary</h2>
+
+              <div className="space-y-4 border-b border-[#262626] pb-6">
+                {cart.items.map((item) => (
+                  <div key={item.id} className="flex justify-between items-start text-sm">
+                    <span className="text-[#A3A3A3] pr-4">
+                      {item.name} <span className="text-[#737373]">x {item.quantity}</span>
+                    </span>
+                    <span className="font-medium text-[#FAFAFA] whitespace-nowrap">
+                      ${(item.price * item.quantity).toFixed(2)}
+                    </span>
+                  </div>
+                ))}
               </div>
-              <div className="flex justify-between text-gray-600">
-                <span>Shipping</span>
-                <span>Free</span>
-              </div>
-              <div className="flex justify-between text-gray-600">
-                <span>Tax</span>
-                <span>$0.00</span>
-              </div>
-              <div className="border-t pt-3 flex justify-between text-xl font-bold text-green-600">
-                <span>Total</span>
-                <span>${cart.totalPrice?.toFixed(2) || '0.00'}</span>
+
+              <div className="mt-6 space-y-3 text-sm">
+                <div className="flex justify-between text-[#A3A3A3]">
+                  <span>Subtotal</span>
+                  <span className="text-[#FAFAFA]">${cart.totalPrice?.toFixed(2) || '0.00'}</span>
+                </div>
+                <div className="flex justify-between text-[#A3A3A3]">
+                  <span>Shipping</span>
+                  <span className="text-[#22C55E]">Free</span>
+                </div>
+                <div className="flex justify-between text-[#A3A3A3]">
+                  <span>Tax</span>
+                  <span className="text-[#FAFAFA]">$0.00</span>
+                </div>
+                <div className="border-t border-[#262626] pt-4 mt-4 flex justify-between items-center text-xl font-bold">
+                  <span className="text-[#FAFAFA]">Total</span>
+                  <span className="text-[#3B82F6]">${cart.totalPrice?.toFixed(2) || '0.00'}</span>
+                </div>
               </div>
             </div>
           </div>

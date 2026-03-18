@@ -14,6 +14,7 @@ import OrderDetails from './Pages/OrderDetails';
 import UserOrders from './Pages/UserOrders';
 import AddProduct from './Pages/AddProduct';
 import UpdateProduct from './Pages/UpdateProduct';
+import Profile from './Pages/Profile';
 
 function App() {
   const [cartCount, setCartCount] = useState(0);
@@ -31,8 +32,10 @@ function App() {
       element: (
         <div>
           <Navbar cartCount={cartCount} />
-          <AddProduct />
-          <Footer />
+          <div className="pt-16">
+            <AddProduct />
+            <Footer />
+          </div>
         </div>
       ),
     },
@@ -54,8 +57,10 @@ function App() {
       element: (
         <div>
           <Navbar cartCount={cartCount} />
-          <Products />
-          <Footer />
+          <div className="pt-16">
+            <Products />
+            <Footer />
+          </div>
         </div>
       ),
     },
@@ -64,8 +69,10 @@ function App() {
       element: (
         <div>
           <Navbar cartCount={cartCount} />
-          <ProductDetails />
-          <Footer />
+          <div className="pt-16">
+            <ProductDetails />
+            <Footer />
+          </div>
         </div>
       ),
     },
@@ -74,8 +81,10 @@ function App() {
       element: (
         <div>
           <Navbar cartCount={cartCount} />
-          <UpdateProduct />
-          <Footer />
+          <div className="pt-16">
+            <UpdateProduct />
+            <Footer />
+          </div>
         </div>
       ),
     },
@@ -84,8 +93,10 @@ function App() {
       element: (
         <div>
           <Navbar cartCount={cartCount} />
-          <Cart />
-          <Footer />
+          <div className="pt-16">
+            <Cart />
+            <Footer />
+          </div>
         </div>
       ),
     },
@@ -94,8 +105,10 @@ function App() {
       element: (
         <div>
           <Navbar cartCount={cartCount} />
-          <OrderDetails />
-          <Footer />
+          <div className="pt-16">
+            <OrderDetails />
+            <Footer />
+          </div>
         </div>
       ),
     },
@@ -104,7 +117,19 @@ function App() {
       element: (
         <div>
           <Navbar cartCount={cartCount} />
-          <UserOrders />
+          <div className="pt-16">
+            <UserOrders />
+            <Footer />
+          </div>
+        </div>
+      ),
+    },
+    {
+      path: '/profile',
+      element: (
+        <div>
+          <Navbar cartCount={cartCount} />
+          <Profile />
           <Footer />
         </div>
       ),
