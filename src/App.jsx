@@ -15,6 +15,7 @@ import UserOrders from './Pages/UserOrders';
 import AddProduct from './Pages/AddProduct';
 import UpdateProduct from './Pages/UpdateProduct';
 import Profile from './Pages/Profile';
+import AuthCallback from './Pages/AuthCallback';
 
 function App() {
   const [cartCount, setCartCount] = useState(0);
@@ -133,6 +134,10 @@ function App() {
           <Footer />
         </div>
       ),
+    },
+    {
+      path: '/auth/callback',
+      element: <AuthCallback />,
     },
   ]);
   return (
