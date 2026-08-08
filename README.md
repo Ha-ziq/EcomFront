@@ -1,272 +1,578 @@
-# 🛒 E-Commerce API Documentation
+<div align="center">
 
-This file documents the backend APIs for the e-commerce project.  
-Format: **Endpoint → Auth → Request → Response**.
+# 🛒 Ecommerce Frontend
 
----
+### Modern React-Based Shopping Platform Interface
 
-## 1. Authentication
+A responsive e-commerce frontend built with React and Vite, providing product browsing, authentication, cart management, checkout flow, and order tracking through integration with a custom REST API backend.
 
-### Register User
-**POST** `/api/auth/register`  
-**Auth**: ❌ Public  
+<br/>
 
-**Body:**
-```json
-{
-  "username": "JohnDoe",
-  "email": "john@example.com",
-  "password": "Password123"
-}
-```
+![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)
+![Vite](https://img.shields.io/badge/Vite-7-646CFF?style=for-the-badge&logo=vite)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=for-the-badge&logo=javascript)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?style=for-the-badge&logo=tailwindcss)
+![React Router](https://img.shields.io/badge/React_Router-DOM-CA4245?style=for-the-badge&logo=reactrouter)
 
-**Response:**
-```json
-{
-  "message": "User created successfully",
-  "user": {
-    "_id": "647c...",
-    "username": "JohnDoe",
-    "email": "john@example.com",
-    "role": "user",
-    "cart": [],
-    "createdAt": "2024-06-01T..."
-  }
-}
-```
+</div>
+
+<br/>
 
 ---
 
-### Login User
-**POST** `/api/auth/login`  
-**Auth**: ❌ Public  
+# Overview
 
-**Body:**
-```json
-{
-  "email": "john@example.com",
-  "password": "Password123"
-}
-```
+Ecommerce Frontend is a React single-page application designed for an online shopping experience.
 
-**Response:**
-```json
-{
-  "message": "Login successful",
-  "token": "JWT_TOKEN_HERE",
-  "user": {
-    "id": "647c...",
-    "email": "john@example.com",
-    "name": "JohnDoe"
-    "cart": []
-  }
-}
-```
+The application provides a complete customer workflow:
+
+- User authentication
+- Product discovery
+- Product details
+- Shopping cart management
+- Checkout
+- Order tracking
+- User profile management
+
+The frontend communicates with a custom Express.js backend through REST APIs and manages application state using React Context API.
 
 ---
 
-### Restricted Route (Test Token)
-**GET** `/api/auth/restricted`  
-**Auth**: ✅ Requires JWT  
+# 🏗️ Application Architecture
 
-**Header:**
+The application follows a component-based React architecture.
+
 ```
-Authorization: Bearer <token>
-```
+                 React Application
 
-**Response:**
-```json
-"success"
-```
+                        |
+        +---------------+---------------+
+        |                               |
+        v                               v
 
----
+ Authentication Context          Cart Context
 
-## 2. Products
+        |                               |
 
-### Get All Products
-**GET** `/api/products`  
-**Auth**: ❌ Public  
+        +---------------+---------------+
 
-**Response:**
-```json
-[
-  {   
-    "id": "648d...",
-    "name": "Laptop",
-    "description": "14-inch ultrabook",
-    "category": "Electronics",
-    "price": 899.99,
-    "stock": 10,
-    "imageUrl": "http://example.com/laptop.jpg",
-    "isActive": true
-  }
-]
+                        |
+
+                        v
+
+              React Router Pages
+
+                        |
+
+                        v
+
+              Reusable Components
+
+                        |
+
+                        v
+
+              REST API Backend
+
+                        |
+
+                        v
+
+                    MongoDB
 ```
 
 ---
 
-### Get Product by ID
-**GET** `/api/products/:id`  
-**Auth**: ❌ Public  
+# ✨ Features
 
----
+## 🔐 Authentication System
 
-### Create Product
-**POST** `/api/products`  
-**Auth**: ✅ Admin only  
+The application supports user authentication through JWT-based sessions.
 
-**Body:**
-```json
-{
-  "name": "Laptop",
-  "description": "14-inch ultrabook",
-  "category": "Electronics",
-  "price": 899.99,
-  "stock": 10,
-  "imageUrl": "http://example.com/laptop.jpg"
-}
+Features:
+
+- User registration
+- User login
+- JWT token storage
+- Persistent authentication state
+- Logout functionality
+- Google OAuth callback handling
+- Role-based UI access
+
+Authentication flow:
+
+```
+Login/Register
+
+        |
+
+        v
+
+Backend Authentication
+
+        |
+
+        v
+
+JWT Token Generated
+
+        |
+
+        v
+
+Token Stored Locally
+
+        |
+
+        v
+
+Authenticated User Session
 ```
 
 ---
 
-### Update Product
-**PUT** `/api/products/:id`  
-**Auth**: ✅ Admin only  
+# 🛍️ Product Management
 
-**Body (only allowed fields):**
-```json
-{
-  "name": "Gaming Laptop",
-  "price": 1099.99,
-  "stock": 15
-}
+Users can browse and interact with available products.
+
+Features:
+
+- Product listing
+- Product detail pages
+- Product cards
+- Category filtering
+- Search functionality
+- Product image display
+- Admin product creation
+- Admin product editing
+- Admin product deletion
+
+---
+
+# 🛒 Shopping Cart
+
+The cart system provides complete shopping functionality.
+
+Features:
+
+- Add products to cart
+- View cart items
+- Increase/decrease quantity
+- Remove products
+- Cart count indicator
+- Backend synchronized cart storage
+
+Cart architecture:
+
+```
+Product
+
+   |
+
+   v
+
+Cart Context
+
+   |
+
+   v
+
+Cart Component
+
+   |
+
+   v
+
+Backend Cart API
 ```
 
 ---
 
-### Delete Product
-**DELETE** `/api/products/:id`  
-**Auth**: ✅ Admin only  
+# 📦 Order System
 
----
+The frontend supports the complete order workflow.
 
-## 3. Cart
+Features:
 
-### View Cart
-**GET** `/api/cart`  
-**Auth**: ✅ User only  
+- Checkout page
+- Order placement
+- Order details
+- Order history
+- User order tracking
 
-**Response:**
-```json
-{
-  "message": "Cart Items",
-  "items": [
-    {
-      "id": "648d...",
-      "name": "Laptop",
-      "price": 899.99,
-      "description": "14-inch ultrabook",
-      "category": "Electronics",
-      "imageUrl": "http://example.com/laptop.jpg",
-      "quantity": 2
-    }
-  ],
-  "totalPrice": 1799.98
-}
+Order flow:
+
+```
+Cart
+
+ |
+
+ v
+
+Checkout
+
+ |
+
+ v
+
+Create Order
+
+ |
+
+ v
+
+Order History
 ```
 
 ---
 
-### Add to Cart
-**POST** `/api/cart`  
-**Auth**: ✅ User only  
+# 🎨 User Interface
 
-**Body:**
-```json
-{
-  "productID": "648d...",
-  "quantity": 1
-}
+The application provides a responsive and interactive user experience.
+
+Implemented:
+
+- Responsive layouts
+- Dark themed interface
+- Loading states
+- Error handling
+- Toast notifications
+- Hover effects
+- Skeleton loading animations
+- Mobile-friendly navigation
+
+---
+
+# 🛠️ Technology Stack
+
+| Category | Technology |
+|-|-|
+| Framework | React 19 |
+| Build Tool | Vite |
+| Language | JavaScript |
+| Routing | React Router DOM |
+| Styling | Tailwind CSS 4 |
+| State Management | React Context API |
+| API Communication | Fetch API |
+| Authentication | JWT |
+| Icons | React Icons, Lucide React |
+| Notifications | React Hot Toast |
+
+---
+
+# 📁 Project Structure
+
+```
+EcomFront
+
+├── public
+│
+├── src
+│
+│── components
+│   ├── Navbar.jsx
+│   ├── Footer.jsx
+│   ├── HeroSection.jsx
+│   ├── ProductList.jsx
+│   ├── ProductCard.jsx
+│   ├── ProductDetail.jsx
+│   ├── CartItem.jsx
+│   └── CheckoutItem.jsx
+│
+│── Pages
+│   ├── Home.jsx
+│   ├── Products.jsx
+│   ├── Login.jsx
+│   ├── Register.jsx
+│   ├── Cart.jsx
+│   ├── Profile.jsx
+│   ├── OrderDetails.jsx
+│   ├── UserOrders.jsx
+│   ├── AddProduct.jsx
+│   └── UpdateProduct.jsx
+│
+│── context
+│   ├── AuthContext.jsx
+│   └── CartContext.jsx
+│
+│── lib
+│   ├── utils.js
+│   └── pricing.js
+│
+├── App.jsx
+├── main.jsx
+├── index.css
+└── package.json
 ```
 
 ---
 
-### Update Cart (Increment/Decrement)
-**PUT** `/api/cart`  
-**Auth**: ✅ User only  
+# 🧩 Component Architecture
 
-**Body:**
-```json
-{
-  "productid": "648d...",
-  "action": "increment"
-}
+The application uses reusable components to keep the UI modular.
+
+Structure:
+
+```
+App
+
+├── Navbar
+
+├── Pages
+
+│
+├── Home
+
+│    ├── HeroSection
+
+│    └── ProductList
+
+│            └── ProductCard
+
+
+├── Products
+
+│    └── ProductList
+
+
+├── Cart
+
+│    └── CartItem
+
+
+└── Footer
+```
+
+Main components:
+
+### Navbar
+
+Handles:
+
+- Navigation
+- Authentication state
+- Cart indicator
+- User actions
+
+
+### ProductCard
+
+Handles:
+
+- Product display
+- Product information
+- Add-to-cart actions
+
+
+### ProductDetail
+
+Handles:
+
+- Detailed product information
+- Individual product actions
+
+
+### CartItem
+
+Handles:
+
+- Quantity updates
+- Removing items
+
+---
+
+# 🔌 API Integration
+
+The frontend communicates with the backend using REST APIs.
+
+Authentication:
+
+```
+POST /api/auth/register
+
+POST /api/auth/login
+```
+
+Products:
+
+```
+GET    /api/products
+
+GET    /api/products/:id
+
+POST   /api/products
+
+PUT    /api/products/:id
+
+DELETE /api/products/:id
+```
+
+Cart:
+
+```
+GET    /api/cart
+
+POST   /api/cart
+
+PUT    /api/cart
+
+DELETE /api/cart
+```
+
+Orders:
+
+```
+POST /api/order
+
+GET  /api/order
+```
+
+API communication:
+
+- Fetch API is used for requests
+- JWT tokens are attached through Authorization headers
+- Backend responses update React state
+
+---
+
+# 🌐 Routing Structure
+
+| Route | Purpose |
+|-|-|
+| `/` | Login page |
+| `/register` | User registration |
+| `/home` | Home page |
+| `/products` | Product catalog |
+| `/products/:id` | Product details |
+| `/cart` | Shopping cart |
+| `/order-details` | Checkout |
+| `/MyOrders` | Order history |
+| `/profile` | User profile |
+| `/add-product` | Create product |
+| `/products/:id/edit` | Update product |
+| `/auth/callback` | Google OAuth callback |
+
+---
+
+# 🧠 State Management
+
+Global application state is handled using React Context API.
+
+## Authentication Context
+
+Responsible for:
+
+- Current user information
+- JWT restoration
+- Authentication persistence
+
+---
+
+## Cart Context
+
+Responsible for:
+
+- Cart items
+- Cart count
+- Add/remove/update operations
+- Backend cart synchronization
+
+---
+
+# 🚀 Installation & Setup
+
+## Requirements
+
+- Node.js
+- npm
+
+---
+
+## Clone Repository
+
+```bash
+git clone <repository-url>
+
+cd EcomFront
 ```
 
 ---
 
-### Remove Product from Cart
-**DELETE** `/api/cart`  
-**Auth**: ✅ User only  
+## Install Dependencies
 
-**Body:**
-```json
-{
-  "productid": "648d..."
-}
+```bash
+npm install
 ```
 
 ---
 
-## 4. Orders
+## Environment Variables
 
-### Place Order
-**POST** `/api/order`  
-**Auth**: ✅ User only  
+Create a `.env` file:
 
-**Response:**
-```json
-{
-  "message": "order placed",
-  "details": {
-    "_id": "649a...",
-    "userId": "647c...",
-    "items": [
-      {
-        "productId": "648d...",
-        "priceAtPurchase": 899.99,
-        "quantity": 2
-      }
-    ],
-    "totalPrice": 1799.98,
-    "status": "pending"
-  }
-}
+```env
+VITE_USD_TO_PKR=
+VITE_PAK_MARKET_FACTOR=
+VITE_PAK_ROUND_TO=
 ```
 
 ---
 
-### Get Orders
-**GET** `/api/order`  
-**Auth**: ✅ User/Admin  
+## Run Development Server
 
-- If user → returns only their orders.  
-- If admin → returns all orders.  
-
-**Response:**
-```json
-{
-  "message": "user orders",
-  "order": [
-    {
-      "_id": "649a...",
-      "userId": "647c...",
-      "items": [
-        { "productId": "648d...", "quantity": 2, "priceAtPurchase": 899.99 }
-      ],
-      "totalPrice": 1799.98,
-      "status": "pending"
-    }
-  ]
-}
+```bash
+npm run dev
 ```
+
+---
+
+## Build Production Version
+
+```bash
+npm run build
+```
+
+---
+
+# 🔮 Future Improvements
+
+Possible improvements:
+
+- Add centralized API service layer
+- Implement protected route wrapper
+- Add payment gateway integration
+- Add product reviews and ratings
+- Improve advanced filtering
+- Add automated testing
+- Deploy frontend with production backend
+
+---
+
+# 📚 Concepts Demonstrated
+
+This project demonstrates:
+
+- React component architecture
+- SPA development
+- Client-side routing
+- Context-based state management
+- REST API integration
+- JWT authentication flow
+- Responsive UI development
+- Frontend-backend communication
+
+---
+
+<div align="center">
+
+## Author
+
+**Haziq Imran**
+
+Computer Science Student @ University of Management and Technology
+
+<br/>
+
+Building software systems through practical projects.
+
+</div>
