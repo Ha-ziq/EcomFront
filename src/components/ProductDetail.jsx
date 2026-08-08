@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import { useCart } from "@/context/CartContext";
-import { FiShoppingCart, FiArrowLeft, FiCheck } from "react-icons/fi";
+import { useEffect, useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { useCart } from '@/context/CartContext';
+import { FiShoppingCart, FiArrowLeft, FiCheck } from 'react-icons/fi';
+import { formatPricePKR } from '@/lib/pricing';
 
 const ProductDetails = () => {
   const [product, setProduct] = useState(null);
@@ -12,10 +13,13 @@ const ProductDetails = () => {
   useEffect(() => {
     const fetchProductDetail = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/api/products/${id}`, {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        });
+        const response = await fetch(
+          `http://localhost:3000/api/products/${id}`,
+          {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+          }
+        );
         const data = await response.json();
         setProduct(data);
       } catch (err) {
@@ -86,7 +90,7 @@ const ProductDetails = () => {
             </h1>
 
             <p className="text-xl sm:text-2xl font-semibold text-[#FAFAFA] mb-8">
-              ${product.price}
+              {formatPricePKR(product.price)}
             </p>
 
             <div className="h-px bg-[#262626] w-full mb-8" />
@@ -96,7 +100,8 @@ const ProductDetails = () => {
                 Description
               </h3>
               <p className="text-[#A3A3A3] leading-relaxed text-sm sm:text-base">
-                {product.description || "No description provided for this premium item. Enjoy the minimalist aesthetic and robust build quality intrinsic to our curated selection."}
+                {product.description ||
+                  'No description provided for this premium item. Enjoy the minimalist aesthetic and robust build quality intrinsic to our curated selection.'}
               </p>
             </div>
 
@@ -109,8 +114,8 @@ const ProductDetails = () => {
                 disabled={adding}
                 className={`flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-semibold text-sm transition-all duration-200 ${
                   adding
-                    ? "bg-green-600 text-white cursor-not-allowed"
-                    : "bg-[#3B82F6] text-white hover:bg-blue-600 hover:shadow-lg hover:shadow-blue-500/20"
+                    ? 'bg-green-600 text-white cursor-not-allowed'
+                    : 'bg-[#3B82F6] text-white hover:bg-blue-600 hover:shadow-lg hover:shadow-blue-500/20'
                 }`}
               >
                 {adding ? (
@@ -128,7 +133,10 @@ const ProductDetails = () => {
             {/* Guarantees */}
             <div className="mt-8 grid grid-cols-2 gap-4">
               {['Free Delivery', '30-Day Returns'].map((text) => (
-                <div key={text} className="flex items-center gap-2 text-sm text-[#A3A3A3]">
+                <div
+                  key={text}
+                  className="flex items-center gap-2 text-sm text-[#A3A3A3]"
+                >
                   <FiCheck className="text-[#3B82F6]" size={16} />
                   {text}
                 </div>

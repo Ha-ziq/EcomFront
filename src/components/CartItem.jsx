@@ -1,6 +1,7 @@
 import { Plus, Minus, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useCart } from '@/context/CartContext';
+import { formatPricePKR } from '@/lib/pricing';
 
 const CartItem = ({ product, productid }) => {
   const { fetchCart } = useCart();
@@ -64,8 +65,12 @@ const CartItem = ({ product, productid }) => {
 
       {/* Info */}
       <div className="flex-1 text-center md:text-left">
-        <h2 className="font-semibold text-lg text-[#FAFAFA] mb-1">{product.name}</h2>
-        <p className="text-[#A3A3A3] font-medium">${product.price}</p>
+        <h2 className="font-semibold text-lg text-[#FAFAFA] mb-1">
+          {product.name}
+        </h2>
+        <p className="text-[#A3A3A3] font-medium">
+          {formatPricePKR(product.price)}
+        </p>
       </div>
 
       {/* Quantity + Remove */}
@@ -74,7 +79,7 @@ const CartItem = ({ product, productid }) => {
         <div className="flex items-center bg-[#0A0A0A] border border-[#262626] rounded-lg p-1">
           <button
             className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-[#1A1A1A] text-[#A3A3A3] hover:text-[#FAFAFA] transition-colors"
-            onClick={() => handleIncrement(productid, "decrement")}
+            onClick={() => handleIncrement(productid, 'decrement')}
             aria-label="Decrease quantity"
           >
             <Minus size={16} />
@@ -86,7 +91,7 @@ const CartItem = ({ product, productid }) => {
 
           <button
             className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-[#1A1A1A] text-[#A3A3A3] hover:text-[#FAFAFA] transition-colors"
-            onClick={() => handleIncrement(productid, "increment")}
+            onClick={() => handleIncrement(productid, 'increment')}
             aria-label="Increase quantity"
           >
             <Plus size={16} />

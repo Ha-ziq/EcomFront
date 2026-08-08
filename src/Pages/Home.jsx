@@ -3,10 +3,17 @@ import HeroSection from '../components/HeroSection';
 import Footer from '../components/Footer';
 import ProductList from '@/components/ProductList';
 import { Link } from 'react-router-dom';
-import { FiTruck, FiShield, FiRefreshCw, FiHeadphones, FiSearch, FiX } from 'react-icons/fi';
+import {
+  FiTruck,
+  FiShield,
+  FiRefreshCw,
+  FiHeadphones,
+  FiSearch,
+  FiX,
+} from 'react-icons/fi';
 
 const PERKS = [
-  { Icon: FiTruck, title: 'Free Shipping', desc: 'On orders over $50' },
+  { Icon: FiTruck, title: 'Free Shipping', desc: 'On orders over Rs 50' },
   { Icon: FiShield, title: 'Secure Payments', desc: '256-bit SSL encryption' },
   { Icon: FiRefreshCw, title: '30-Day Returns', desc: 'Hassle-free refunds' },
   { Icon: FiHeadphones, title: '24/7 Support', desc: 'Always here to help' },
@@ -52,7 +59,6 @@ const Home = () => {
 
       <div className="bg-[#0A0A0A] border-b border-[#262626] pb-10 pt-4 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
-
           {/* ── Category chips and Search area ── */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8 mt-6">
             {/* Categories */}
@@ -64,7 +70,9 @@ const Home = () => {
                 {CATEGORIES.map((label) => (
                   <button
                     key={label}
-                    onClick={() => setActiveCategory(activeCategory === label ? null : label)}
+                    onClick={() =>
+                      setActiveCategory(activeCategory === label ? null : label)
+                    }
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors border ${
                       activeCategory === label
                         ? 'bg-[#3B82F6] text-white border-[#3B82F6]'
@@ -87,7 +95,10 @@ const Home = () => {
                   focused ? 'border-[#3B82F6]' : 'border-[#262626]'
                 }`}
               >
-                <FiSearch size={16} className={focused ? 'text-[#3B82F6]' : 'text-[#737373]'} />
+                <FiSearch
+                  size={16}
+                  className={focused ? 'text-[#3B82F6]' : 'text-[#737373]'}
+                />
                 <input
                   type="text"
                   value={searchQuery}
@@ -110,13 +121,15 @@ const Home = () => {
               </div>
             </div>
           </div>
-          
         </div>
       </div>
 
       <div className="bg-[#0A0A0A]">
         {/* ── Products section ── */}
-        <ProductList searchQuery={searchQuery} activeCategory={activeCategory} />
+        <ProductList
+          searchQuery={searchQuery}
+          activeCategory={activeCategory}
+        />
       </div>
 
       {/* ── Promo Banner ── */}
@@ -132,7 +145,8 @@ const Home = () => {
               on Select Items
             </h2>
             <p className="text-[#A3A3A3] text-sm mb-8 max-w-sm mx-auto">
-              Shop now before stocks run out. Enhance your minimalist setup today.
+              Shop now before stocks run out. Enhance your minimalist setup
+              today.
             </p>
             <Link
               to="/products"

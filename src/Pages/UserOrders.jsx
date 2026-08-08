@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { FiPackage, FiShoppingBag } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
+import { formatPricePKR } from '@/lib/pricing';
 
 const UserOrders = () => {
   const token = localStorage.getItem('token');
@@ -68,16 +69,25 @@ const UserOrders = () => {
   return (
     <div className="min-h-screen bg-[#0A0A0A] pt-24 pb-16 px-4 sm:px-6">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-semibold text-[#FAFAFA] mb-8">My Orders</h1>
+        <h1 className="text-3xl font-semibold text-[#FAFAFA] mb-8">
+          My Orders
+        </h1>
 
         {orders.length === 0 ? (
           <div className="flex flex-col items-center justify-center min-h-[40vh] bg-[#141414] border border-[#262626] rounded-2xl p-10 text-center">
             <div className="w-16 h-16 rounded-full bg-[#0A0A0A] border border-[#262626] flex items-center justify-center text-[#737373] mb-4">
               <FiPackage size={24} />
             </div>
-            <p className="text-[#FAFAFA] text-lg font-medium mb-2">No orders found</p>
-            <p className="text-[#A3A3A3] text-sm mb-6">Looks like you haven't bought anything yet.</p>
-            <Link to="/products" className="bg-[#3B82F6] text-white px-6 py-3 rounded-lg text-sm font-medium hover:bg-blue-600 transition">
+            <p className="text-[#FAFAFA] text-lg font-medium mb-2">
+              No orders found
+            </p>
+            <p className="text-[#A3A3A3] text-sm mb-6">
+              Looks like you haven't bought anything yet.
+            </p>
+            <Link
+              to="/products"
+              className="bg-[#3B82F6] text-white px-6 py-3 rounded-lg text-sm font-medium hover:bg-blue-600 transition"
+            >
               Start Shopping
             </Link>
           </div>
@@ -92,9 +102,17 @@ const UserOrders = () => {
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-5">
                   <div>
                     <h2 className="text-sm font-semibold text-[#FAFAFA]">
-                      Order ID <span className="text-[#737373] ml-1">#{order._id.substring(order._id.length - 8).toUpperCase()}</span>
+                      Order ID{' '}
+                      <span className="text-[#737373] ml-1">
+                        #
+                        {order._id
+                          .substring(order._id.length - 8)
+                          .toUpperCase()}
+                      </span>
                     </h2>
-                    <p className="text-xs text-[#A3A3A3] mt-1">Placed carefully with NexShop</p>
+                    <p className="text-xs text-[#A3A3A3] mt-1">
+                      Placed carefully with NexShop
+                    </p>
                   </div>
                   <span
                     className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border ${
@@ -105,7 +123,8 @@ const UserOrders = () => {
                           : 'bg-[#1A1A1A] text-[#A3A3A3] border-[#262626]'
                     }`}
                   >
-                    {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                    {order.status.charAt(0).toUpperCase() +
+                      order.status.slice(1)}
                   </span>
                 </div>
 
@@ -144,7 +163,7 @@ const UserOrders = () => {
                         </div>
 
                         <p className="font-medium text-sm text-[#FAFAFA] pr-2">
-                          ${item.priceAtPurchase.toFixed(2)}
+                          {formatPricePKR(item.priceAtPurchase)}
                         </p>
                       </div>
                     );
@@ -153,8 +172,12 @@ const UserOrders = () => {
 
                 {/* Order Footer */}
                 <div className="flex justify-between items-center border-t border-[#262626] mt-5 pt-4">
-                  <p className="text-sm font-medium text-[#A3A3A3]">Order Total</p>
-                  <p className="text-lg font-bold text-[#3B82F6]">${order.totalPrice.toFixed(2)}</p>
+                  <p className="text-sm font-medium text-[#A3A3A3]">
+                    Order Total
+                  </p>
+                  <p className="text-lg font-bold text-[#3B82F6]">
+                    {formatPricePKR(order.totalPrice)}
+                  </p>
                 </div>
               </div>
             ))}

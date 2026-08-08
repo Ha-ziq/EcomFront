@@ -2,6 +2,36 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useCart } from '@/context/CartContext';
+import { formatPricePKR } from '@/lib/pricing';
+
+const InputField = ({
+  label,
+  name,
+  type = 'text',
+  placeholder,
+  value,
+  error,
+  onChange,
+}) => (
+  <div>
+    <label className="block mb-2 text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider">
+      {label} *
+    </label>
+    <input
+      type={type}
+      name={name}
+      value={value}
+      onChange={onChange}
+      className={`w-full px-4 py-3 bg-[#0A0A0A] border rounded-lg text-sm text-[#FAFAFA] placeholder:text-[#737373] focus:outline-none transition-colors ${
+        error
+          ? 'border-red-500 focus:border-red-400'
+          : 'border-[#262626] focus:border-[#3B82F6]'
+      }`}
+      placeholder={placeholder}
+    />
+    {error && <p className="text-red-500 text-xs mt-1.5">{error}</p>}
+  </div>
+);
 
 const OrderDetails = () => {
   const { cart } = useCart();
@@ -57,7 +87,11 @@ const OrderDetails = () => {
     if (!validate()) {
       toast.error('Please fill in all required fields correctly', {
         position: 'top-center',
-        style: { background: '#141414', color: '#FAFAFA', border: '1px solid #262626' }
+        style: {
+          background: '#141414',
+          color: '#FAFAFA',
+          border: '1px solid #262626',
+        },
       });
       return;
     }
@@ -80,23 +114,35 @@ const OrderDetails = () => {
       const data = await response.json();
 
       if (response.ok) {
-        toast.success('Order placed successfully!', { 
+        toast.success('Order placed successfully!', {
           position: 'top-center',
-          style: { background: '#141414', color: '#FAFAFA', border: '1px solid #262626' }
+          style: {
+            background: '#141414',
+            color: '#FAFAFA',
+            border: '1px solid #262626',
+          },
         });
         setTimeout(() => navigate('/MyOrders'), 1000);
       } else {
         console.error('Order placement error:', data);
         toast.error(data?.message || data?.error || 'Failed to place order', {
           position: 'top-center',
-          style: { background: '#141414', color: '#FAFAFA', border: '1px solid #262626' }
+          style: {
+            background: '#141414',
+            color: '#FAFAFA',
+            border: '1px solid #262626',
+          },
         });
       }
     } catch (err) {
       console.error('Network error:', err);
-      toast.error(err.message || 'Network error', { 
+      toast.error(err.message || 'Network error', {
         position: 'top-center',
-        style: { background: '#141414', color: '#FAFAFA', border: '1px solid #262626' }
+        style: {
+          background: '#141414',
+          color: '#FAFAFA',
+          border: '1px solid #262626',
+        },
       });
     } finally {
       setLoading(false);
@@ -111,36 +157,16 @@ const OrderDetails = () => {
             Your cart is currently{' '}
             <span className="font-bold text-[#FAFAFA]">empty</span>.
           </p>
-          <button onClick={() => navigate('/products')} className="mt-4 bg-[#3B82F6] text-white px-8 py-3 rounded-lg hover:bg-blue-600 transition">
+          <button
+            onClick={() => navigate('/products')}
+            className="mt-4 bg-[#3B82F6] text-white px-8 py-3 rounded-lg hover:bg-blue-600 transition"
+          >
             Browse Products
           </button>
         </div>
       </div>
     );
   }
-
-  const InputField = ({ label, name, type = 'text', placeholder }) => (
-    <div>
-      <label className="block mb-2 text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider">
-        {label} *
-      </label>
-      <input
-        type={type}
-        name={name}
-        value={formData[name]}
-        onChange={handleChange}
-        className={`w-full px-4 py-3 bg-[#0A0A0A] border rounded-lg text-sm text-[#FAFAFA] placeholder:text-[#737373] focus:outline-none transition-colors ${
-          errors[name]
-            ? 'border-red-500 focus:border-red-400'
-            : 'border-[#262626] focus:border-[#3B82F6]'
-        }`}
-        placeholder={placeholder}
-      />
-      {errors[name] && (
-        <p className="text-red-500 text-xs mt-1.5">{errors[name]}</p>
-      )}
-    </div>
-  );
 
   return (
     <div className="min-h-screen bg-[#0A0A0A] pt-24 pb-16 px-4 sm:px-6">
@@ -151,21 +177,81 @@ const OrderDetails = () => {
           {/* Left: Order Summary */}
           <div className="lg:col-span-8">
             <div className="bg-[#141414] rounded-2xl border border-[#262626] p-6 sm:p-8">
-              <h2 className="text-xl font-semibold text-[#FAFAFA] mb-6">Shipping Information</h2>
+              <h2 className="text-xl font-semibold text-[#FAFAFA] mb-6">
+                Shipping Information
+              </h2>
 
               <form onSubmit={handlePlaceOrder} className="space-y-5">
-                <InputField label="Full Name" name="fullName" placeholder="John Doe" />
-                <InputField label="Email" name="email" type="email" placeholder="john@example.com" />
-                <InputField label="Phone Number" name="phone" type="tel" placeholder="+1 (555) 000-0000" />
-                <InputField label="Street Address" name="streetAddress" placeholder="123 Main Street" />
+                <InputField
+                  label="Full Name"
+                  name="fullName"
+                  placeholder="John Doe"
+                  value={formData.fullName}
+                  error={errors.fullName}
+                  onChange={handleChange}
+                />
+                <InputField
+                  label="Email"
+                  name="email"
+                  type="email"
+                  placeholder="john@example.com"
+                  value={formData.email}
+                  error={errors.email}
+                  onChange={handleChange}
+                />
+                <InputField
+                  label="Phone Number"
+                  name="phone"
+                  type="tel"
+                  placeholder="+1 (555) 000-0000"
+                  value={formData.phone}
+                  error={errors.phone}
+                  onChange={handleChange}
+                />
+                <InputField
+                  label="Street Address"
+                  name="streetAddress"
+                  placeholder="123 Main Street"
+                  value={formData.streetAddress}
+                  error={errors.streetAddress}
+                  onChange={handleChange}
+                />
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <InputField label="City" name="city" placeholder="New York" />
-                  <InputField label="State/Province" name="state" placeholder="NY" />
-                  <InputField label="Postal Code" name="postalCode" placeholder="10001" />
+                  <InputField
+                    label="City"
+                    name="city"
+                    placeholder="New York"
+                    value={formData.city}
+                    error={errors.city}
+                    onChange={handleChange}
+                  />
+                  <InputField
+                    label="State/Province"
+                    name="state"
+                    placeholder="NY"
+                    value={formData.state}
+                    error={errors.state}
+                    onChange={handleChange}
+                  />
+                  <InputField
+                    label="Postal Code"
+                    name="postalCode"
+                    placeholder="10001"
+                    value={formData.postalCode}
+                    error={errors.postalCode}
+                    onChange={handleChange}
+                  />
                 </div>
 
-                <InputField label="Country" name="country" placeholder="United States" />
+                <InputField
+                  label="Country"
+                  name="country"
+                  placeholder="United States"
+                  value={formData.country}
+                  error={errors.country}
+                  onChange={handleChange}
+                />
 
                 <div className="flex flex-col sm:flex-row gap-4 mt-8 pt-6 border-t border-[#262626]">
                   <button
@@ -190,16 +276,22 @@ const OrderDetails = () => {
           {/* Right: Order Summary Sidebar */}
           <div className="lg:col-span-4">
             <div className="bg-[#141414] rounded-2xl border border-[#262626] p-6 lg:sticky lg:top-24">
-              <h2 className="text-lg font-semibold text-[#FAFAFA] mb-6">Order Summary</h2>
+              <h2 className="text-lg font-semibold text-[#FAFAFA] mb-6">
+                Order Summary
+              </h2>
 
               <div className="space-y-4 border-b border-[#262626] pb-6">
                 {cart.items.map((item) => (
-                  <div key={item.id} className="flex justify-between items-start text-sm">
+                  <div
+                    key={item.id}
+                    className="flex justify-between items-start text-sm"
+                  >
                     <span className="text-[#A3A3A3] pr-4">
-                      {item.name} <span className="text-[#737373]">x {item.quantity}</span>
+                      {item.name}{' '}
+                      <span className="text-[#737373]">x {item.quantity}</span>
                     </span>
                     <span className="font-medium text-[#FAFAFA] whitespace-nowrap">
-                      ${(item.price * item.quantity).toFixed(2)}
+                      {formatPricePKR(item.price * item.quantity)}
                     </span>
                   </div>
                 ))}
@@ -208,7 +300,9 @@ const OrderDetails = () => {
               <div className="mt-6 space-y-3 text-sm">
                 <div className="flex justify-between text-[#A3A3A3]">
                   <span>Subtotal</span>
-                  <span className="text-[#FAFAFA]">${cart.totalPrice?.toFixed(2) || '0.00'}</span>
+                  <span className="text-[#FAFAFA]">
+                    {formatPricePKR(cart.totalPrice)}
+                  </span>
                 </div>
                 <div className="flex justify-between text-[#A3A3A3]">
                   <span>Shipping</span>
@@ -216,11 +310,13 @@ const OrderDetails = () => {
                 </div>
                 <div className="flex justify-between text-[#A3A3A3]">
                   <span>Tax</span>
-                  <span className="text-[#FAFAFA]">$0.00</span>
+                  <span className="text-[#FAFAFA]">Rs 0</span>
                 </div>
                 <div className="border-t border-[#262626] pt-4 mt-4 flex justify-between items-center text-xl font-bold">
                   <span className="text-[#FAFAFA]">Total</span>
-                  <span className="text-[#3B82F6]">${cart.totalPrice?.toFixed(2) || '0.00'}</span>
+                  <span className="text-[#3B82F6]">
+                    {formatPricePKR(cart.totalPrice)}
+                  </span>
                 </div>
               </div>
             </div>

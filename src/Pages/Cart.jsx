@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '@/context/CartContext';
 import { FiShoppingCart, FiArrowRight } from 'react-icons/fi';
+import { formatPricePKR } from '@/lib/pricing';
 
 const Cart = () => {
   const { fetchCart, cart, loading } = useCart();
@@ -22,7 +23,9 @@ const Cart = () => {
             <FiShoppingCart size={24} />
           </div>
           <div className="space-y-2">
-            <h2 className="text-xl font-semibold text-[#FAFAFA]">Sign in required</h2>
+            <h2 className="text-xl font-semibold text-[#FAFAFA]">
+              Sign in required
+            </h2>
             <p className="text-sm text-[#A3A3A3]">
               You need to login to view and manage your cart.
             </p>
@@ -53,9 +56,12 @@ const Cart = () => {
             <FiShoppingCart size={32} />
           </div>
           <div className="space-y-2">
-            <h2 className="text-2xl font-semibold text-[#FAFAFA]">Your cart is empty</h2>
+            <h2 className="text-2xl font-semibold text-[#FAFAFA]">
+              Your cart is empty
+            </h2>
             <p className="text-sm text-[#A3A3A3] max-w-sm mx-auto">
-              Looks like you haven't added anything to your cart yet. Discover our premium minimal collection.
+              Looks like you haven't added anything to your cart yet. Discover
+              our premium minimal collection.
             </p>
           </div>
           <Link
@@ -73,7 +79,9 @@ const Cart = () => {
       <div className="grid lg:grid-cols-12 gap-8 items-start mt-8">
         {/* Cart Items List */}
         <div className="lg:col-span-8 flex flex-col gap-4">
-          <h1 className="text-2xl font-semibold text-[#FAFAFA] mb-2">Shopping Cart ({cart.items.length})</h1>
+          <h1 className="text-2xl font-semibold text-[#FAFAFA] mb-2">
+            Shopping Cart ({cart.items.length})
+          </h1>
           {cart.items.map((item) => (
             <CartItem key={item.id} product={item} productid={item.id} />
           ))}
@@ -81,12 +89,16 @@ const Cart = () => {
 
         {/* Order Summary Sidebar */}
         <div className="lg:col-span-4 bg-[#141414] border border-[#262626] rounded-2xl p-6 lg:sticky lg:top-24">
-          <h2 className="text-lg font-semibold text-[#FAFAFA] mb-6">Order Summary</h2>
-          
+          <h2 className="text-lg font-semibold text-[#FAFAFA] mb-6">
+            Order Summary
+          </h2>
+
           <div className="space-y-4 mb-6 text-sm">
             <div className="flex justify-between text-[#A3A3A3]">
               <span>Subtotal</span>
-              <span className="text-[#FAFAFA] font-medium">${cart.totalPrice}</span>
+              <span className="text-[#FAFAFA] font-medium">
+                {formatPricePKR(cart.totalPrice)}
+              </span>
             </div>
             <div className="flex justify-between text-[#A3A3A3]">
               <span>Shipping</span>
@@ -94,7 +106,9 @@ const Cart = () => {
             </div>
             <div className="flex justify-between text-[#A3A3A3]">
               <span>Tax</span>
-              <span className="text-[#FAFAFA] font-medium">Calculated at checkout</span>
+              <span className="text-[#FAFAFA] font-medium">
+                Calculated at checkout
+              </span>
             </div>
           </div>
 
@@ -102,7 +116,9 @@ const Cart = () => {
 
           <div className="flex justify-between items-center mb-8">
             <span className="text-[#FAFAFA] font-medium">Total</span>
-            <span className="text-2xl font-semibold text-[#3B82F6]">${cart.totalPrice}</span>
+            <span className="text-2xl font-semibold text-[#3B82F6]">
+              {formatPricePKR(cart.totalPrice)}
+            </span>
           </div>
 
           <Link
@@ -119,9 +135,7 @@ const Cart = () => {
 
   return (
     <div className="min-h-screen bg-[#0A0A0A] pt-24 pb-20 px-4 sm:px-6">
-      <div className="max-w-6xl mx-auto">
-        {renderCart()}
-      </div>
+      <div className="max-w-6xl mx-auto">{renderCart()}</div>
     </div>
   );
 };

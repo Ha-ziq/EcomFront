@@ -4,6 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import { Link } from 'react-router-dom';
 import { FaEdit } from 'react-icons/fa';
 import { FiShoppingCart } from 'react-icons/fi';
+import { formatPricePKR } from '@/lib/pricing';
 
 const ProductCard = ({ p }) => {
   const { addToCart } = useCart();
@@ -21,7 +22,10 @@ const ProductCard = ({ p }) => {
   return (
     <article className="group relative bg-[#141414] rounded-xl overflow-hidden flex flex-col card-hover border border-[#262626]">
       {/* Image area */}
-      <Link to={`/products/${id}`} className="block relative bg-[#0A0A0A] border-b border-[#262626] p-4">
+      <Link
+        to={`/products/${id}`}
+        className="block relative bg-[#0A0A0A] border-b border-[#262626] p-4"
+      >
         <div className="relative w-full h-48 overflow-hidden flex items-center justify-center bg-white rounded-lg">
           {imageUrl ? (
             <img
@@ -38,7 +42,7 @@ const ProductCard = ({ p }) => {
 
           {/* Price badge */}
           <div className="absolute top-3 right-3 bg-[#0A0A0A] shadow-lg rounded-lg px-2.5 py-1 text-sm font-bold text-[#FAFAFA] border border-[#262626]">
-            ${price}
+            {formatPricePKR(price)}
           </div>
         </div>
       </Link>

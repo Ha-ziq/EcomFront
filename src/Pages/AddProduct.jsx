@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import { FiImage } from 'react-icons/fi';
+import { formatPricePKR } from '@/lib/pricing';
 
 const initialState = {
   name: '',
@@ -114,7 +115,14 @@ export default function AddProduct() {
     }
   };
 
-  const InputField = ({ label, name, type = "text", placeholder, isTextarea = false, rows = 3 }) => (
+  const InputField = ({
+    label,
+    name,
+    type = 'text',
+    placeholder,
+    isTextarea = false,
+    rows = 3,
+  }) => (
     <div>
       <label className="block mb-2 text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider">
         {label}
@@ -134,7 +142,7 @@ export default function AddProduct() {
           name={name}
           value={form[name]}
           onChange={handleChange}
-          step={type === "number" ? "0.01" : undefined}
+          step={type === 'number' ? '0.01' : undefined}
           className="w-full px-4 py-3 bg-[#0A0A0A] border border-[#262626] rounded-lg text-sm text-[#FAFAFA] placeholder:text-[#737373] focus:outline-none focus:border-[#3B82F6] transition-colors"
           placeholder={placeholder}
         />
@@ -145,7 +153,9 @@ export default function AddProduct() {
   return (
     <div className="min-h-screen bg-[#0A0A0A] pt-24 pb-16 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-semibold text-[#FAFAFA] mb-8">Add New Product</h1>
+        <h1 className="text-3xl font-semibold text-[#FAFAFA] mb-8">
+          Add New Product
+        </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
           {/* Left: Preview */}
@@ -178,7 +188,7 @@ export default function AddProduct() {
                 </p>
                 <div className="mt-6 flex items-center justify-between border-t border-[#262626] pt-4">
                   <span className="text-xl font-semibold text-[#FAFAFA]">
-                    {form.price ? `$${form.price}` : '$0.00'}
+                    {formatPricePKR(form.price || 0)}
                   </span>
                   <span className="text-xs font-semibold px-2.5 py-1 bg-[#1A1A1A] border border-[#262626] rounded-full text-[#A3A3A3]">
                     Stock: {form.stock || 0}
@@ -203,16 +213,44 @@ export default function AddProduct() {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
-              <InputField label="Product Name" name="name" placeholder="e.g. Minimalist Keyboard" />
-              <InputField label="Description" name="description" placeholder="A brief description of this item" isTextarea rows={4} />
+              <InputField
+                label="Product Name"
+                name="name"
+                placeholder="e.g. Minimalist Keyboard"
+              />
+              <InputField
+                label="Description"
+                name="description"
+                placeholder="A brief description of this item"
+                isTextarea
+                rows={4}
+              />
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                <InputField label="Category" name="category" placeholder="Electronics" />
-                <InputField label="Price (USD)" name="price" type="number" placeholder="0.00" />
-                <InputField label="Stock Quantity" name="stock" type="number" placeholder="0" />
+                <InputField
+                  label="Category"
+                  name="category"
+                  placeholder="Electronics"
+                />
+                <InputField
+                  label="Price (USD)"
+                  name="price"
+                  type="number"
+                  placeholder="0.00"
+                />
+                <InputField
+                  label="Stock Quantity"
+                  name="stock"
+                  type="number"
+                  placeholder="0"
+                />
               </div>
 
-              <InputField label="Image URL" name="imageUrl" placeholder="https://example.com/image.jpg" />
+              <InputField
+                label="Image URL"
+                name="imageUrl"
+                placeholder="https://example.com/image.jpg"
+              />
 
               <div className="flex flex-col sm:flex-row gap-4 mt-8 pt-6 border-t border-[#262626]">
                 <button

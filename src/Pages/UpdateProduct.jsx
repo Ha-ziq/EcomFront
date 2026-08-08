@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import toast from 'react-hot-toast';
 import { FiImage, FiTrash2 } from 'react-icons/fi';
+import { formatPricePKR } from '@/lib/pricing';
 
 const initialState = {
   name: '',
@@ -157,7 +158,11 @@ export default function UpdateProduct() {
       if (res.ok) {
         toast.success('Product deleted successfully', {
           position: 'top-center',
-          style: { background: '#141414', color: '#FAFAFA', border: '1px solid #262626' }
+          style: {
+            background: '#141414',
+            color: '#FAFAFA',
+            border: '1px solid #262626',
+          },
         });
         setTimeout(() => navigate('/products'), 900);
       } else {
@@ -177,7 +182,14 @@ export default function UpdateProduct() {
     }
   };
 
-  const InputField = ({ label, name, type = "text", placeholder, isTextarea = false, rows = 3 }) => (
+  const InputField = ({
+    label,
+    name,
+    type = 'text',
+    placeholder,
+    isTextarea = false,
+    rows = 3,
+  }) => (
     <div>
       <label className="block mb-2 text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider">
         {label}
@@ -197,7 +209,7 @@ export default function UpdateProduct() {
           name={name}
           value={form[name]}
           onChange={handleChange}
-          step={type === "number" ? "0.01" : undefined}
+          step={type === 'number' ? '0.01' : undefined}
           className="w-full px-4 py-3 bg-[#0A0A0A] border border-[#262626] rounded-lg text-sm text-[#FAFAFA] placeholder:text-[#737373] focus:outline-none focus:border-[#3B82F6] transition-colors"
           placeholder={placeholder}
         />
@@ -209,8 +221,10 @@ export default function UpdateProduct() {
     <div className="min-h-screen bg-[#0A0A0A] pt-24 pb-16 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-semibold text-[#FAFAFA]">Edit Product</h1>
-          
+          <h1 className="text-3xl font-semibold text-[#FAFAFA]">
+            Edit Product
+          </h1>
+
           <button
             type="button"
             disabled={deleting}
@@ -223,9 +237,12 @@ export default function UpdateProduct() {
 
         {showDeleteConfirm && (
           <div className="mb-8 rounded-xl border border-red-500/50 bg-[#1A0B0B] p-6 max-w-lg shadow-xl shadow-red-900/10">
-            <h3 className="text-lg font-semibold text-red-500 mb-2">Confirm Deletion</h3>
+            <h3 className="text-lg font-semibold text-red-500 mb-2">
+              Confirm Deletion
+            </h3>
             <p className="text-sm text-[#A3A3A3] mb-6">
-              Are you sure you want to permanently delete this product? This action cannot be undone.
+              Are you sure you want to permanently delete this product? This
+              action cannot be undone.
             </p>
             <div className="flex gap-4">
               <button
@@ -279,7 +296,7 @@ export default function UpdateProduct() {
                 </p>
                 <div className="mt-6 flex items-center justify-between border-t border-[#262626] pt-4">
                   <span className="text-xl font-semibold text-[#FAFAFA]">
-                    {form.price ? `$${form.price}` : '$0.00'}
+                    {formatPricePKR(form.price || 0)}
                   </span>
                   <span className="text-xs font-semibold px-2.5 py-1 bg-[#1A1A1A] border border-[#262626] rounded-full text-[#A3A3A3]">
                     Stock: {form.stock || 0}
@@ -304,16 +321,44 @@ export default function UpdateProduct() {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
-              <InputField label="Product Name" name="name" placeholder="e.g. Minimalist Keyboard" />
-              <InputField label="Description" name="description" placeholder="A brief description of this item" isTextarea rows={4} />
+              <InputField
+                label="Product Name"
+                name="name"
+                placeholder="e.g. Minimalist Keyboard"
+              />
+              <InputField
+                label="Description"
+                name="description"
+                placeholder="A brief description of this item"
+                isTextarea
+                rows={4}
+              />
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                <InputField label="Category" name="category" placeholder="Electronics" />
-                <InputField label="Price (USD)" name="price" type="number" placeholder="0.00" />
-                <InputField label="Stock Quantity" name="stock" type="number" placeholder="0" />
+                <InputField
+                  label="Category"
+                  name="category"
+                  placeholder="Electronics"
+                />
+                <InputField
+                  label="Price (USD)"
+                  name="price"
+                  type="number"
+                  placeholder="0.00"
+                />
+                <InputField
+                  label="Stock Quantity"
+                  name="stock"
+                  type="number"
+                  placeholder="0"
+                />
               </div>
 
-              <InputField label="Image URL" name="imageUrl" placeholder="https://example.com/image.jpg" />
+              <InputField
+                label="Image URL"
+                name="imageUrl"
+                placeholder="https://example.com/image.jpg"
+              />
 
               <div className="flex flex-col sm:flex-row gap-4 mt-8 pt-6 border-t border-[#262626]">
                 <button
